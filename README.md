@@ -6,7 +6,10 @@ Works in unison with hwinfo, an application used for monitoring various system p
 Requires Python 3.8.3 to be installed along with pynput.
 
 ## Configuration
-The upper temperature ceiling and the output file size limits can be modified in the json configuration file.
+The following paramters can be configured in the json configuration file-
+1. Upper temperature threshold - the temperature at which Extreme Cooling has to be enabled.
+2. Output file size limit - the size limit of the output file to avoid the file growing too large and causing performance issues.
+3. Previous temperatures check - the number of previously recorded temperatures to check before switching off Extreme Cooling.
 
 ## Setup
 1. Install Python and pynput.
