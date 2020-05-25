@@ -5,6 +5,9 @@ Works in unison with hwinfo, an application used for monitoring various system p
 ## Requirements
 Requires Python 3.8.3 to be installed along with pynput.
 
+## Configuration
+The upper temperature ceiling and the output file size limits can be modified in the json configuration file.
+
 ## Setup
 1. Install Python and pynput.
 2. Download the package into a suitable directory.
