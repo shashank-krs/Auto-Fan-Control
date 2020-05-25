@@ -9,5 +9,5 @@ Requires Python 3.8.3 to be installed along with pynput.
 1. Install Python and pynput.
 2. Download the package into a suitable directory.
 3. Create an alert in hwinfo settings for CPU/GPU.
-4. Enable run a command, and provide the link to the pythonw exe with argument as the downloaded script.
+4. Enable run a command, and provide the link to the pythonw exe with argument as the downloaded script.<br/>
 eg. C:/Python38/pythonw.exe C:/autoFanControl/autoFanControl.py %v
