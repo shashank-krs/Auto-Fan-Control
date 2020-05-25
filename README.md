@@ -1,4 +1,4 @@
-# Auto-Fan-Control
+# Auto Fan Control
 Script to automatically enable Extreme Cooling on the Lenovo Legion Y520 laptop.
 Works in unison with hwinfo, an application used for monitoring various system hardware parameters.
 
