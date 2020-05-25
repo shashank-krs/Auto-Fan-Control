@@ -2,7 +2,6 @@ from pynput.keyboard import Key, Controller
 import os,sys
 import time as systime
 import json
-from subprocess import check_output
 
 currentTemp = int(sys.argv[1])
 homeDir = os.getcwd()
