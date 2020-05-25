@@ -69,7 +69,7 @@ def checkPreviousTemps():
 			tempsArray=f.readlines()
 		tempsArray = list(map(str.strip, tempsArray))
 		for temperatures in tempsArray[-3:]:
-			if int(temperatures) > upperTemperatureLimit:
+			if int(temperatures) >= upperTemperatureLimit:
 				return False
 				break
 		return True
@@ -149,18 +149,19 @@ curCoolingInd = getCoolingInd()
 logMessage("Current temperature is " + str(currentTemp))
 logMessage("Last known temperature is " + str(lastKnownTemp))
 
-if currentTemp > upperTemperatureLimit and lastKnownTemp > upperTemperatureLimit and curCoolingInd == "Start":
-	logMessage("Extreme Cooling is already running")
-elif currentTemp > upperTemperatureLimit and lastKnownTemp < upperTemperatureLimit and curCoolingInd == "Stop":
+if currentTemp >= upperTemperatureLimit and lastKnownTemp < upperTemperatureLimit and curCoolingInd == "Stop":
 	logMessage("Temperature is above the limit, running Extreme Cooling")
 	writeToFile("Start")
-	#runExtremeCooling()
-elif currentTemp < upperTemperatureLimit and checkPreviousTemps() and curCoolingInd == "Start":
-	logMessage("Temperature is below the limit, stopping Extreme Cooling")
-	#runExtremeCooling()
-	writeToFile("Stop")
-elif currentTemp <= upperTemperatureLimit and checkPreviousTemps() == False and curCoolingInd == "Start":
-	logMessage("Not cooled enough, skipping till next run")
+	runExtremeCooling()
+elif currentTemp >= upperTemperatureLimit and curCoolingInd == "Start":
+	logMessage("Extreme Cooling is already running")
+elif currentTemp < upperTemperatureLimit and curCoolingInd == "Start":
+	if checkPreviousTemps():
+		logMessage("Temperature is below the limit, stopping Extreme Cooling")
+		runExtremeCooling()
+		writeToFile("Stop")
+	elif checkPreviousTemps() == False:
+		logMessage("Not cooled enough, skipping till next run")
 elif currentTemp < upperTemperatureLimit and curCoolingInd == "Stop":
 	logMessage("Temperature is normal")
 
