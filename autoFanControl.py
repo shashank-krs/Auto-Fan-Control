@@ -1,16 +1,24 @@
 from pynput.keyboard import Key, Controller
 import os,sys
 import time as systime
+import json
 from subprocess import check_output
 
 currentTemp = int(sys.argv[1])
-homeDir = "c:/Users/shashank/Downloads/Software/autoFanControl/"
-outputFile = homeDir + "temperatureList.txt"
-indicatorFile = homeDir + "coolingIndicator.txt"
-logFile = homeDir + "autoFanControl.log"
-outputFileSizeLimit = 10240
-upperTemperatureLimit = 85
-keyboard = Controller()
+homeDir = os.getcwd()
+dataDir = homeDir + "/data/"
+logsDir = homeDir + "/logs/"
+configDir = homeDir + "/config/"
+scriptConfig = configDir + "configAutoFanControl.json"
+outputFile = dataDir + "temperatureList.txt"
+indicatorFile = dataDir + "coolingIndicator.txt"
+logFile = logsDir + "autoFanControl.log"
+
+# Reading thresholds
+with open(scriptConfig, 'r') as config:
+	configData = json.load(config)
+outputFileSizeLimit = int(configData['fileSizeThreshold'])
+upperTemperatureLimit = int(configData['temperatureThreshold'])
 
 def logMessage(message,mode=None):
 	time = systime.localtime()
@@ -27,8 +35,22 @@ def logMessage(message,mode=None):
 		logMessage(e)
 		sys.exit(1)
 
+def readConfig(scriptSetting):
+	try:
+		with open(scriptConfig, 'r') as config:
+			configData = json.load(config)
+		return configData[scriptSetting]
+	except IOError:
+		logMessage("Configuration is missing, exiting")
+		sys.exit(1)
+	except Exception as e:
+		logMessage("Script failed due to an unexpected error")
+		logMessage(e)
+		sys.exit(1)
+
 def runExtremeCooling():
 	try:
+		keyboard = Controller()
 		keyboard.press(Key.ctrl.value)
 		keyboard.press(Key.shift.value)
 		keyboard.press('0')
@@ -83,7 +105,7 @@ def clearOutputFile():
 		if "The system cannot find the file specified" in str(e):
 			logMessage("File not found for clearing, assuming initial run")
 		else:
-			logMessage("Unexpected error found in readLastKnownTemp, exiting")
+			logMessage("Unexpected error found in clearOutputFile, exiting")
 			logMessage(e)
 			sys.exit(1)
 
@@ -132,10 +154,10 @@ if currentTemp > upperTemperatureLimit and lastKnownTemp > upperTemperatureLimit
 elif currentTemp > upperTemperatureLimit and lastKnownTemp < upperTemperatureLimit and curCoolingInd == "Stop":
 	logMessage("Temperature is above the limit, running Extreme Cooling")
 	writeToFile("Start")
-	runExtremeCooling()
+	#runExtremeCooling()
 elif currentTemp < upperTemperatureLimit and checkPreviousTemps() and curCoolingInd == "Start":
 	logMessage("Temperature is below the limit, stopping Extreme Cooling")
-	runExtremeCooling()
+	#runExtremeCooling()
 	writeToFile("Stop")
 elif currentTemp <= upperTemperatureLimit and checkPreviousTemps() == False and curCoolingInd == "Start":
 	logMessage("Not cooled enough, skipping till next run")
