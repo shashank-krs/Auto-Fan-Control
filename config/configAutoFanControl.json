@@ -1,4 +1,5 @@
 {
-	"temperatureThreshold":"85",
-	"fileSizeThreshold":"10240"
+	"upperTemperatureThreshold":"85",
+	"fileSizeThreshold":"10240",
+	"previousTempCheckThreshold":"2"
 }
