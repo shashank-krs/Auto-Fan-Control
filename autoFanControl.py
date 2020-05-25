@@ -18,7 +18,8 @@ logFile = logsDir + "autoFanControl.log"
 with open(scriptConfig, 'r') as config:
 	configData = json.load(config)
 outputFileSizeLimit = int(configData['fileSizeThreshold'])
-upperTemperatureLimit = int(configData['temperatureThreshold'])
+upperTemperatureLimit = int(configData['upperTemperatureThreshold'])
+previousTempCheckLimit = 0-int(configData['previousTempCheckThreshold'])
 
 def logMessage(message,mode=None):
 	time = systime.localtime()
@@ -35,19 +36,6 @@ def logMessage(message,mode=None):
 		logMessage(e)
 		sys.exit(1)
 
-def readConfig(scriptSetting):
-	try:
-		with open(scriptConfig, 'r') as config:
-			configData = json.load(config)
-		return configData[scriptSetting]
-	except IOError:
-		logMessage("Configuration is missing, exiting")
-		sys.exit(1)
-	except Exception as e:
-		logMessage("Script failed due to an unexpected error")
-		logMessage(e)
-		sys.exit(1)
-
 def runExtremeCooling():
 	try:
 		keyboard = Controller()
@@ -59,7 +47,7 @@ def runExtremeCooling():
 		keyboard.release(Key.shift.value)
 		keyboard.release(Key.ctrl.value)
 	except Exception as e:
-		logMessage("Script failed due to an unexpected error")
+		logMessage("Unexpected error found in runExtremeCooling, exiting")
 		logMessage(e)
 		sys.exit(1)
 
@@ -68,7 +56,7 @@ def checkPreviousTemps():
 		with open(outputFile) as f:
 			tempsArray=f.readlines()
 		tempsArray = list(map(str.strip, tempsArray))
-		for temperatures in tempsArray[-3:]:
+		for temperatures in tempsArray[previousTempCheckLimit:]:
 			if int(temperatures) >= upperTemperatureLimit:
 				return False
 				break
@@ -77,7 +65,7 @@ def checkPreviousTemps():
 		logMessage("File not found for checking previous temperatures, assuming initial run")
 		return True
 	except Exception as e:
-		logMessage("Script failed due to an unexpected error")
+		logMessage("Unexpected error found in checkPreviousTemps, exiting")
 		logMessage(e)
 		sys.exit(1)
 
