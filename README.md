@@ -5,7 +5,7 @@ Works in unison with hwinfo, an application used for monitoring various system p
 ## Requirements
 Requires Python 3.8.3 to be installed along with pynput.
 
-## To setup
+## Setup
 1. Install Python and pynput.
 2. Download the package into a suitable directory.
 3. Create an alert in hwinfo settings for CPU/GPU.
